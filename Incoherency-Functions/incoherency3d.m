@@ -37,9 +37,7 @@ auto = acorr3(g);
 
 % Indices of the zero lag autocorrelation: The autocorrelation has a
 % maximum at zero lag
-[maxauto,t] = max(max(max(auto)));
-[~,exp]     = max(max(auto(:,:,t)));
-[~,sx]      = max(auto(:,exp,t));
+[maxauto,~] = max(max(max(auto)));
 
 %% Stabilization factor
 
