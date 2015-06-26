@@ -41,10 +41,6 @@ auto = acorr3(g);
 [~,exp]     = max(max(auto(:,:,t)));
 [~,sx]      = max(auto(:,exp,t));
 
-% Set the zero lag amplitude to zero 
-auto(sx,exp,t) = 0;
-
-
 %% Stabilization factor
 
 % * Introduce a stabilization factor 'stab' to avoid zero divisions
@@ -72,6 +68,4 @@ end
 % * this is sort of signal to noise ratio
 in = maxauto^2 / (norm3(auto)^2 + stab);
 
-%% Fix the autocorrelation zero lag value for return
-auto(sx,exp,t) = maxauto;
 

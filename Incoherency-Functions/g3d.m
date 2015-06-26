@@ -12,7 +12,7 @@
 % OUTPUT
 % * Blending matrix with the following properties:
 %       -> b sources are blended
-%       -> Dimension: Source x Experiment x Time Ns x Ne x t_g
+%       -> Dimension: Source x Experiment x Time, Ns x Ne x t_g
 %       -> The elements of g are integers
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
