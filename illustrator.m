@@ -12,7 +12,7 @@ b   = 5;        % Blending factor
 dt  = 0.002;    % Sampling rate: Seconds per sample
 tg  = 100;      % Maximum time delay in time samples
 Nt  = 201;      % Number of time samples
-pattern = 0;    % Blending pattern (Time + Space)
+pattern = 3;    % Blending pattern (Time + Space)
 
 % Patterns:
 % 0     Time
@@ -23,18 +23,12 @@ pattern = 0;    % Blending pattern (Time + Space)
 
 [G3,g3] = crane(Ns,Nt,b,tg,pattern);
 
-%% Compute incoherency & autocorrelation
-
-[in,auto] = incoherency3d(g3);
-[in_mod,auto_mod] = incoherency3d_mod(g3);
-
-
-
 %% Compute GGH, sum along diagonals, and sum over all frequency components
 
 % Initialize matrix to save the sums along diagonals for each frequency
 % component separately
 diagsum = zeros(Ns,Nt);
+inco = zeros(1,Nt);
 
 % Iterate over all frequency components
 for w = 1:size(G3,3)
@@ -47,8 +41,10 @@ for w = 1:size(G3,3)
     % Sum along diagonals
     % Save the result in diagsum
     for dia = 1:Ns
-        diagsum(dia,w) = sum(diag(GGH,dia-1));
+        diagsum(dia,w) =  abs( sum(diag(GGH,dia-1)) );
     end
+    
+    inco(1,w) = diagsum(1,w)^2 / sum(diagsum(:,w).^2);
    
 end
 
@@ -56,27 +52,9 @@ end
 % Ideally the output is the autocorrelation with respect to source lag
 autocorr = sum(diagsum,2);
 
-figure(1); plot(real( autocorr(1:53,1)/norm(autocorr(1:53,1)) ));
+figure(1); plot( autocorr(:,1) );
+figure(2); plot( diagsum(:,30) );
+figure(3); plot( inco);
 
-%% Extract the autocorrelation with respect to source lag from the 3d autocorrelation matrix
-
-
-[~,t] = max(max(max(auto)));
-[~,exp]     = max(max(auto(:,:,t)));
-
-auto_src = squeeze( auto(1:53,exp,t) );
-figure(2); plot(real( auto_src/norm(auto_src) ));
-
-%% Extract the autocorrelation with respect to source lag from the modified 3d autocorrelation matrix
-
-
-[~,t] = max(max(max(auto_mod)));
-[~,exp]     = max(max(auto_mod(:,:,t)));
-
-auto_src = squeeze( auto_mod(53:end,exp,t) );
-figure(3); plot(real( auto_src/norm(auto_src) ));
-
-%% Difference: Diagonal autocorrelation - modified autocorrelation
-
-figure(4); plot( (real( auto_src/norm(auto_src) ) - real( autocorr(1:53,1)/norm(autocorr(1:53,1)) )) / real( auto_src/norm(auto_src) ) );
-
+in = autocorr(1,1)^2 / sum(autocorr.^2);
+in_mod = mean(inco);
