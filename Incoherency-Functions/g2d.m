@@ -10,7 +10,6 @@
 % OUTPUT
 % * Blending matrix with the following properties:
 %       -> b sources are blended
-%       -> The blending time shifts are fully random
 %       -> The elements of g are integers
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
