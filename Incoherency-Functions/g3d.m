@@ -1,6 +1,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % PURPOSE
-% * This script only blends sources of a 2D source grid
+% * Create a 3d blending matrix
 % * But the blending matrix is organized in a new way:
 %   Soure x Experiment x Time, each element is 1 or 0
 
@@ -19,14 +19,20 @@
 function [g,Ne] = g3d(t_g,b,Ns,pattern)
 
 % Number of experiments, initialize g
-Ne = round(Ns/b);   g = zeros(Ns,Ne,t_g);
+Ne = Ns/b;   g = zeros(Ns,Ne,t_g);
+
+% Ne must be an integer
+if Ne ~= round(Ne)
+    error('The number of sources Ns must be a multiple of the blending factor b.')
+end
 
 % Set default blending pattern
 if nargin < 4
-    pattern = 1;
+    pattern = 0;
 end
 
-% Pattern 0: b adjacent sources are blended with random time delays in
+% Pattern 0: Time
+% b adjacent sources are blended with random time delays in
 % order, eg from the left to the right
 if pattern == 0
     
@@ -38,7 +44,8 @@ if pattern == 0
         end
     end
     
-% Pattern 1: b adjacent sources are blended with random time delays in
+% Pattern 1: Time-Space-Experiment
+% b adjacent sources are blended with random time delays in
 % random order
 elseif pattern == 1
     
@@ -50,7 +57,8 @@ elseif pattern == 1
         end
     end
     
-% Pattern 2: b randomly picked sources are blended with random time delays    
+% Pattern 2: Time Space
+% b randomly picked sources are blended with random time delays    
 elseif pattern == 2
         
     for exp = 1:Ne
@@ -65,7 +73,8 @@ elseif pattern == 2
     ind = randperm(Ns);
     g(ind,:,:) = g;
     
-% Pattern 3: b randomly picked sources are blended with no time delay
+% Pattern 3: Space 
+% b randomly picked sources are blended with no time delay
 elseif pattern == 3
     
     for exp = 1:Ne
@@ -80,7 +89,8 @@ elseif pattern == 3
     ind = randperm(Ns);
     g(ind,:,:) = g;
     
-% Pattern 4: b adjacent sources are blended with no time delay in
+% Pattern 4: None 
+% b adjacent sources are blended with no time delay in
 % order, eg from the left to the right
 elseif pattern == 4
     
