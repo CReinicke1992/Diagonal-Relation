@@ -1,53 +1,48 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % INPUT
-% * g:  4d blending matrix with entries equal to 1 or 0
-%       Dimension Nsx x Nsi x Ne x t_g
+% * g:  3d blending matrix with entries equal to 1 or 0
+%       Dimension Nsx x Ne x t_g
 
 % OUTPUT
 % * in:
-%   * Incoherency estimation based on the 4d autocorreltion auto of g 
+%   * Incoherency estimation based on the 3d autocorreltion auto of g 
 %   * The matrix 'g' is normed for a fair comparison between incoherencies
 %   * Idea: Incoherency = ( Zero-Lag-Amlitude 
 %                          / norm(All Amplitudes) )^2
-% * auto: 4d auto-correlation (optional output)
-
-% REMARK
-% This function was based on incoherency3d.m which is located in
-% MasterSemeester/Incoherency/
+% * auto: 3d auto-correlation (optional output)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-function [in,auto] = incoherency4d(g)
+function [in,auto] = incoherency3d(g)
 
 %% Checks & Preparation
 
 if max(g(:)) <= 0
-    m1 = 'incoherency.m expects a blending matrix g with at least one '; 
+    m1 = 'incoherency3d.m expects a blending matrix g with at least one '; 
     m2 = ' positive entry per experiment (2nd dimension).';
     message = strcat(m1,m2);
     error(message);
 end
 
-if ndims(g) ~= 4
-    error('incoherency4d.m expects a 4d gamma matrix g.')
+if ndims(g) ~= 3
+    error('incoherency3d.m expects a 3d gamma matrix g.')
 end
 
 % Normalize g
-g = g./norm4(g);
+g = g./norm3(g);
 
-% Compute 4d autocorrelation: auto is a 4d array!
-auto = acorr4(g);
+% Compute 3d autocorrelation: auto is a 3d array!
+auto = acorr3(g);
 
 % Indices of the zero lag autocorrelation: The autocorrelation has a
 % maximum at zero lag
-[maxauto,t] = max(max(max(max(auto))));
-[~,exp]     = max(max(max(auto(:,:,:,t))));
-[~,si]      = max(max(auto(:,:,exp,t)));
-[~,sx]      = max(max(auto(:,si,exp,t)));
+[maxauto,t] = max(max(max(auto)));
+[~,exp]     = max(max(auto(:,:,t)));
+[~,sx]      = max(auto(:,exp,t));
 
 % Set the zero lag amplitude to zero 
-auto(sx,si,exp,t) = 0;
+auto(sx,exp,t) = 0;
 
 
 %% Stabilization factor
@@ -75,8 +70,8 @@ end
 %   zero lag
 % * Square the results to relate the result to energy 
 % * this is sort of signal to noise ratio
-in = maxauto^2 / (norm4(auto)^2 + stab);
+in = maxauto^2 / (norm3(auto)^2 + stab);
 
 %% Fix the autocorrelation zero lag value for return
-auto(sx,si,exp,t) = maxauto;
+auto(sx,exp,t) = maxauto;
 
