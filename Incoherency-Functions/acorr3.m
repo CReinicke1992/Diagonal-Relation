@@ -1,20 +1,20 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % PURPOSE
-% * Compute 4d auto-correltation
+% * Compute 3d auto-correltation
 
 % INPUT
-% * A:      4d array
+% * A:      3d array
 
 % OUTPUT
-% * corr:   4d auto-correlation 
+% * corr:   3d auto-correlation 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-function corr = acorr4(a)
+function corr = acorr3(a)
 
-% acorr4 performs 4d auto-correlation, thus it expects 4d input array
-if ndims(a) ~= 4
-   error('acorr4.m expects 4d input arrays.'); 
+% acorr3 performs 3d auto-correlation, thus it expects 3d input array
+if ndims(a) ~= 3
+   error('acorr3.m expects 3d input arrays.'); 
 end
 
 a = single(a);
