@@ -20,7 +20,7 @@
 %   a 2d format with g3dto2d.m
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [G3,g3] = crane_mod(Ns,Nt,b,t_g,pattern)
+function [G3,g3] = crane(Ns,Nt,b,t_g,pattern)
 
 %% Stability checks
 
@@ -40,7 +40,12 @@ if exist('g3dto2d.m','file') ~= 2
     error(message);
 end
 
-Ne = round(Ns/b);
+Ne = Ns/b;
+
+% Ne must be an integer
+if Ne ~= round(Ne)
+    error('The number of sources Ns must be a multiple of the blending factor b.')
+end
 
 %% Compute G
 
