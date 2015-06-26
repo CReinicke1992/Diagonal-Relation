@@ -52,10 +52,13 @@ end
 % Ideally the output is the autocorrelation with respect to source lag
 autocorr = sum(diagsum,2);
 
-figure; plot(abs(autocorr/norm(autocorr)));
+figure; plot(real( autocorr/norm(autocorr) ));
 
 %% Extract the autocorrelation with respect to source lag from the 3d autocorrelation matrix
 
 
+[~,t] = max(max(max(auto)));
+[~,exp]     = max(max(auto(:,:,t)));
 
-
+auto_src = squeeze( auto(:,exp,t) );
+figure; plot(real( auto_src/norm(auto_src) ));
