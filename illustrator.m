@@ -1,3 +1,5 @@
+
+
 % Make functions available
 addpath('Incoherency-Functions');
 
@@ -10,7 +12,7 @@ b   = 5;        % Blending factor
 dt  = 0.002;    % Sampling rate: Seconds per sample
 tg  = 100;      % Maximum time delay in time samples
 Nt  = 201;      % Number of time samples
-pattern = 2;    % Blending pattern (Time + Space)
+pattern = 0;    % Blending pattern (Time + Space)
 
 % Patterns:
 % 0     Time
@@ -24,6 +26,8 @@ pattern = 2;    % Blending pattern (Time + Space)
 %% Compute incoherency & autocorrelation
 
 [in,auto] = incoherency3d(g3);
+[in_mod,auto_mod] = incoherency3d_mod(g3);
+
 
 
 %% Compute GGH, sum along diagonals, and sum over all frequency components
@@ -52,7 +56,7 @@ end
 % Ideally the output is the autocorrelation with respect to source lag
 autocorr = sum(diagsum,2);
 
-figure; plot(real( autocorr/norm(autocorr) ));
+figure(1); plot(real( autocorr(1:53,1)/norm(autocorr(1:53,1)) ));
 
 %% Extract the autocorrelation with respect to source lag from the 3d autocorrelation matrix
 
@@ -60,5 +64,19 @@ figure; plot(real( autocorr/norm(autocorr) ));
 [~,t] = max(max(max(auto)));
 [~,exp]     = max(max(auto(:,:,t)));
 
-auto_src = squeeze( auto(:,exp,t) );
-figure; plot(real( auto_src/norm(auto_src) ));
+auto_src = squeeze( auto(1:53,exp,t) );
+figure(2); plot(real( auto_src/norm(auto_src) ));
+
+%% Extract the autocorrelation with respect to source lag from the modified 3d autocorrelation matrix
+
+
+[~,t] = max(max(max(auto_mod)));
+[~,exp]     = max(max(auto_mod(:,:,t)));
+
+auto_src = squeeze( auto_mod(53:end,exp,t) );
+figure(3); plot(real( auto_src/norm(auto_src) ));
+
+%% Difference: Diagonal autocorrelation - modified autocorrelation
+
+figure(4); plot( (real( auto_src/norm(auto_src) ) - real( autocorr(1:53,1)/norm(autocorr(1:53,1)) )) / real( auto_src/norm(auto_src) ) );
+
