@@ -54,6 +54,8 @@ for w = 1:size(G3,3)
     
 end
 
+%% Compute incoherency
+
 % Sum over all frequency components
 % Ideally the output is the autocorrelation with respect to source lag
 autocorr = sum(diagsum,2);
