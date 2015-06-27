@@ -1,12 +1,36 @@
-% Required m-files:
-%   * crane.m
-%   * g3d.m
-%   * g3dto2d.m
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function in = incoherency_dia(Ns,Nt,b,tg,pattern)
+% PURPOSE
+% * Quantify the incoherency of a blending matrix based on the diagonals of
+%   GGH 
 
-[G3,~] = crane(Ns,Nt,b,tg,pattern);
+% INPUT
+%   * g2d:    2d blending matrix
+%   * Nt:     Number of time samples
+
+% OUTPUT
+%   * Incoherency value between 0 and 1
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function in = incoherency_dia(g2d,Nt)
+
+%% Generate Gamma matrices for each frequency component
+
+[Ns,Ne] = size(g2d);
+g3 = zeros(Ns,Ne,Nt);
+
+for src = 1:Ns
+    for exp = 1:Ne
+        if g2d(src,exp) ~= 0
+            ind = g2d(src,exp);
+            g3(src,exp,ind) = 1;
+        end
+    end
+end
+
+G3 = fft(g3,[],3);
 
 %% Compute GGH, sum along diagonals, and sum over all frequency components
 
@@ -27,19 +51,12 @@ for w = 1:size(G3,3)
     for dia = 1-Ns:Ns-1
         diagsum(dia+Ns,w) =  abs( sum(diag(GGH,dia)) );
     end
-        
-    inco(1,w) = diagsum(Ns,w)^2 / sum(diagsum(:,w).^2);
-   
+    
 end
 
 % Sum over all frequency components
 % Ideally the output is the autocorrelation with respect to source lag
 autocorr = sum(diagsum,2);
 
-figure(1); plot( autocorr(:,1) ); title('autocorrelation for summed frequencies');
-figure(2); plot( diagsum(:,30) ); title('autocorrelation of w = 30');
-figure(3); plot( inco); xlabel('Frequency')
-
+% Quantifiy incoherency
 in = autocorr(Ns,1)^2 / sum(autocorr.^2);
-%in = 10*log10( autocorr(1,1)^2 / sum(autocorr.^2) );
-%in_mod = mean(inco);
