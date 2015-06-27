@@ -12,7 +12,7 @@ b   = 5;        % Blending factor
 dt  = 0.002;    % Sampling rate: Seconds per sample
 tg  = 100;      % Maximum time delay in time samples
 Nt  = 201;      % Number of time samples
-pattern = 4;    % Blending pattern (Time + Space)
+pattern = 2;    % Blending pattern (Time + Space)
 
 % Patterns:
 % 0     Time
@@ -57,5 +57,7 @@ figure(2); plot( diagsum(:,30) ); title('autocorrelation of w = 30');
 figure(3); plot( inco); xlabel('Frequency')
 
 in = autocorr(Ns,1)^2 / sum(autocorr.^2);
+
+in_new = (Ns*Nt/b)^2 / (sum(autocorr) - Ns*Nt/b)^2;
 %in = 10*log10( autocorr(1,1)^2 / sum(autocorr.^2) );
 %in_mod = mean(inco);
