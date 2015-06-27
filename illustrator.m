@@ -12,7 +12,7 @@ b   = 5;        % Blending factor
 dt  = 0.002;    % Sampling rate: Seconds per sample
 tg  = 100;      % Maximum time delay in time samples
 Nt  = 201;      % Number of time samples
-pattern = 2;    % Blending pattern (Time + Space)
+pattern = 3;    % Blending pattern (Time + Space)
 
 % Patterns:
 % 0     Time
@@ -44,7 +44,7 @@ for w = 1:size(G3,3)
         diagsum(dia+Ns,w) =  abs( sum(diag(GGH,dia)) );
     end
         
-    inco(1,w) = diagsum(Ns,w)^2 / sum(diagsum(:,w).^2);
+    inco(1,w) = b / sum(diagsum(:,w));
    
 end
 
@@ -58,6 +58,12 @@ figure(3); plot( inco); xlabel('Frequency')
 
 in = autocorr(Ns,1)^2 / sum(autocorr.^2);
 
-in_new = (Ns*Nt/b)^2 / (sum(autocorr) - Ns*Nt/b)^2;
+autocorr_tmp = [autocorr(1:Ns-1);0; autocorr(Ns+1:end,1) ];
+
+weight = (2:Ns)';
+denominator =  sum( autocorr(1:Ns-1,1).^2 ./ flip(weight) ) + autocorr(Ns,1)^2 + sum( autocorr(1:Ns-1,1).^2 ./ weight );
+nominator = autocorr(Ns,1)^2;
+    
+in_new = nominator / denominator  ;
 %in = 10*log10( autocorr(1,1)^2 / sum(autocorr.^2) );
-%in_mod = mean(inco);
+in_mod = mean(inco);
