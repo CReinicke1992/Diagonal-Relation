@@ -7,12 +7,12 @@ addpath('Incoherency-Functions');
 %% Create a 2d blending matrix
 
 % Parameters
-Ns  = 105;      % Number of sources
+Ns  =105;      % Number of sources
 b   = 5;        % Blending factor
 dt  = 0.002;    % Sampling rate: Seconds per sample
 tg  = 100;      % Maximum time delay in time samples
 Nt  = 201;      % Number of time samples
-pattern = 3;    % Blending pattern (Time + Space)
+pattern = 0;    % Blending pattern (Time + Space)
 
 % Patterns:
 % 0     Time
@@ -52,9 +52,10 @@ end
 % Ideally the output is the autocorrelation with respect to source lag
 autocorr = sum(diagsum,2);
 
-figure(1); plot( autocorr(:,1) );
-figure(2); plot( diagsum(:,30) );
-figure(3); plot( inco);
+figure(1); plot( autocorr(:,1) ); title('autocorrelation for summed frequencies');
+figure(2); plot( diagsum(:,30) ); title('autocorrelation of w = 30');
+figure(3); plot( inco); xlabel('Frequency')
 
 in = autocorr(1,1)^2 / sum(autocorr.^2);
-in_mod = mean(inco);
+%in = 10*log10( autocorr(1,1)^2 / sum(autocorr.^2) );
+%in_mod = mean(inco);
