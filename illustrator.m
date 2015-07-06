@@ -14,6 +14,15 @@ tg  = 100;      % Maximum time delay in time samples
 Nt  = 201;      % Number of time samples
 pattern = 2;    % Blending pattern (Time + Space)
 
+in1_240 = zeros(20,1);
+in1_250 = zeros(20,1);
+in2_240 = zeros(20,1);
+in2_250 = zeros(20,1);
+
+for iter = 1:1
+for tg = [240,250]
+    
+
 % Patterns:
 % 0     Time
 % 1     Time Space Experiment
@@ -44,7 +53,7 @@ for w = 1:size(G3,3)
         diagsum(dia+Ns,w) =  abs( sum(diag(GGH,dia)) );
     end
         
-    inco(1,w) = b / sum(diagsum(:,w));
+    inco(1,w) = Ns / sum(diagsum(:,w));
    
 end
 
@@ -53,7 +62,7 @@ end
 autocorr = sum(diagsum,2);
 
 figure(1); plot( autocorr(:,1) ); title('autocorrelation for summed frequencies');
-figure(2); plot( diagsum(:,30) ); title('autocorrelation of w = 30');
+figure(2); plot( diagsum(:,3) ); title('autocorrelation of w = 3');
 figure(3); plot( inco); xlabel('Frequency')
 
 in = autocorr(Ns,1)^2 / sum(autocorr.^2);
@@ -72,3 +81,31 @@ weight = [(Ns:-1:2)';1;(2:Ns)'];
 in_may = autocorr(Ns) / sum( autocorr./weight );
 %autocorr(Ns)
 %sum(autocorr)
+
+nominator = autocorr(Ns,1);
+autocorr(Ns,1) = 0;
+denominator = sum( autocorr.^2 );
+in2 = nominator/denominator; 
+in1 = 1/in2;
+
+if tg == 240
+    in1_240(iter,1) = in1;
+end
+
+if tg == 250
+    in1_250(iter,1) = in1;
+end
+
+if tg == 240
+    in2_240(iter,1) = in2;
+end
+
+if tg == 250
+    in2_250(iter,1) = in2;
+end
+
+end
+end
+
+[mean(in1_240), mean(in1_250)]
+[mean(in2_240), mean(in2_250)]
