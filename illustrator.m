@@ -1,4 +1,4 @@
-
+close all
 
 % Make functions available
 addpath('Incoherency-Functions');
@@ -8,19 +8,11 @@ addpath('Incoherency-Functions');
 
 % Parameters
 Ns  =105;      % Number of sources
-b   = 5;        % Blending factor
+b   = 21;        % Blending factor
 dt  = 0.002;    % Sampling rate: Seconds per sample
-tg  = 100;      % Maximum time delay in time samples
+tg  = 10;      % Maximum time delay in time samples
 Nt  = 201;      % Number of time samples
-pattern = 2;    % Blending pattern (Time + Space)
-
-in1_240 = zeros(20,1);
-in1_250 = zeros(20,1);
-in2_240 = zeros(20,1);
-in2_250 = zeros(20,1);
-
-for iter = 1:1
-for tg = [240,250]
+pattern = 0;    % Blending pattern (Time + Space)
     
 
 % Patterns:
@@ -67,45 +59,45 @@ figure(3); plot( inco); xlabel('Frequency')
 
 in = autocorr(Ns,1)^2 / sum(autocorr.^2);
 
-autocorr_tmp = [autocorr(1:Ns-1);0; autocorr(Ns+1:end,1) ];
-
-weight = (2:Ns)';
-denominator =  sum( autocorr(1:Ns-1,1).^2 ./ flip(weight) ) + autocorr(Ns,1)^2 + sum( autocorr(1:Ns-1,1).^2 ./ weight );
-nominator = autocorr(Ns,1)^2;
-    
-in_new = nominator / denominator  ;
-%in = 10*log10( autocorr(1,1)^2 / sum(autocorr.^2) );
-in_mod = mean(inco);
-
-weight = [(Ns:-1:2)';1;(2:Ns)'];
-in_may = autocorr(Ns) / sum( autocorr./weight );
-%autocorr(Ns)
-%sum(autocorr)
-
-nominator = autocorr(Ns,1);
-autocorr(Ns,1) = 0;
-denominator = sum( autocorr.^2 );
-in2 = nominator/denominator; 
-in1 = 1/in2;
-
-if tg == 240
-    in1_240(iter,1) = in1;
-end
-
-if tg == 250
-    in1_250(iter,1) = in1;
-end
-
-if tg == 240
-    in2_240(iter,1) = in2;
-end
-
-if tg == 250
-    in2_250(iter,1) = in2;
-end
-
-end
-end
-
-[mean(in1_240), mean(in1_250)]
-[mean(in2_240), mean(in2_250)]
+% autocorr_tmp = [autocorr(1:Ns-1);0; autocorr(Ns+1:end,1) ];
+% 
+% weight = (2:Ns)';
+% denominator =  sum( autocorr(1:Ns-1,1).^2 ./ flip(weight) ) + autocorr(Ns,1)^2 + sum( autocorr(1:Ns-1,1).^2 ./ weight );
+% nominator = autocorr(Ns,1)^2;
+%     
+% in_new = nominator / denominator  ;
+% %in = 10*log10( autocorr(1,1)^2 / sum(autocorr.^2) );
+% in_mod = mean(inco);
+% 
+% weight = [(Ns:-1:2)';1;(2:Ns)'];
+% in_may = autocorr(Ns) / sum( autocorr./weight );
+% %autocorr(Ns)
+% %sum(autocorr)
+% 
+% nominator = autocorr(Ns,1);
+% autocorr(Ns,1) = 0;
+% denominator = sum( autocorr.^2 );
+% in2 = nominator/denominator; 
+% in1 = 1/in2;
+% 
+% if tg == 240
+%     in1_240(iter,1) = in1;
+% end
+% 
+% if tg == 250
+%     in1_250(iter,1) = in1;
+% end
+% 
+% if tg == 240
+%     in2_240(iter,1) = in2;
+% end
+% 
+% if tg == 250
+%     in2_250(iter,1) = in2;
+% end
+% 
+% end
+% end
+% 
+% [mean(in1_240), mean(in1_250)]
+% [mean(in2_240), mean(in2_250)]
